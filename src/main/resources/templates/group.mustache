@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="TDIU">
+    <title>{{ title }}</title>
+
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+    <!-- Favicons -->
+    <meta name="theme-color" content="#7952b3">
+
+
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+
+        .container {
+            max-width: 960px;
+        }
+
+        .pricing-header {
+            max-width: 700px;
+        }
+
+    </style>
+
+    <!-- Custom styles for this template -->
+</head>
+<body>
+<header class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
+    <p class="h5 my-0 me-md-auto fw-normal">TDIU</p>
+    <nav class="my-2 my-md-0 me-md-3">
+        <a class="p-2 text-dark" href="/">Guruhlar</a>
+    </nav>
+</header>
+
+<div class="container mt-5">
+
+
+    <div class="row">
+        <div class="col text-center">
+            <h3>Dissertatsiya mavzulari</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col text-center">
+            <h3>Guruh uchun mavzular: <span class="text-warning">{{#groupName}}{{groupName}}{{/groupName}}</span></h3>
+        </div>
+    </div>
+
+    {{#flash-success}}
+    <div class="row mt-4">
+        <div class="col">
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Muvaffaqiyatli!</strong> Siz mavzuni muvaffaqiyatli tanladingiz.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+    {{/flash-success}}
+
+    {{#flash-error}}
+        <div class="row mt-4">
+            <div class="col">
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Xato!</strong>
+                    {{#flash-message}}{{flash-message}}{{/flash-message}}
+                    {{^flash-message}}Saqlash paytida xatolik yuz berdi.{{/flash-message}}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+    {{/flash-error}}
+
+    <div class="row mt-5">
+        <div class="col">
+            <table class="table table-hover table-bordered">
+                <thead class="table-light">
+                <tr>
+                    <td>Mavzuni tanlang</td>
+                    <td>Mavzu</td>
+                    <td>Student</td>
+                </tr>
+                </thead>
+                <tbody>
+                {{#topics}}
+                    <tr>
+                        <td>
+                            {{^student}}
+                            <div class="form-check">
+                                <input type="hidden" class="topicName" value="{{#title}}{{title}}{{/title}}" />
+                                <input type="hidden" class="currentTopicId" value="{{id}}">
+                                <input class="form-check-input" type="radio" name="topicRadio" id="flexRadioDefault{{id}}">
+                                <label class="form-check-label" for="flexRadioDefault{{id}}">
+                                    Tanlang
+                                </label>
+                            </div>
+                            {{/student}}
+
+                            {{#student}}
+                                <span class="badge bg-primary">Mavzu boshqa talaba tomonidan tanlangan</span>
+                            {{/student}}
+                        </td>
+                        <td>{{#title}}{{title}}{{/title}}</td>
+                        <td>{{#student}}{{student}}{{/student}}</td>
+                    </tr>
+                {{/topics}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {{#hasPages}}
+    <div class="row mt-2">
+        <div class="col">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    {{^hasPrev}}<li class="page-item disabled"><span class="page-link">Previous</span></li>{{/hasPrev}}
+                    {{#hasPrev}}<li class="page-item"><a class="page-link" href="/group/{{id}}?page={{prevPage}}">Previous</a></li>{{/hasPrev}}
+
+                    {{#pages}}
+                        <li class="page-item {{#current}}active{{/current}}" {{#current}}aria-current="page" {{/current}}><a class="page-link" href="/group/{{id}}?page={{page}}">{{page}}</a></li>
+                    {{/pages}}
+
+                    {{^hasNext}}<li class="page-item disabled"><span class="page-link">Next</span></li>{{/hasNext}}
+                    {{#hasNext}}<li class="page-item"><a class="page-link" href="/group/{{id}}?page={{nextPage}}">Next</a></li>{{/hasNext}}
+                </ul>
+            </nav>
+        </div>
+    </div>
+    {{/hasPages}}
+
+    <hr />
+
+    <div class="row mt-4">
+        <div class="col">
+            <h5>Tanlangan mavzu: <span class="text-warning" id="selectedTheme"></span> </h5>
+        </div>
+    </div>
+
+    <div class="row mt-3 mb-5">
+        <div class="col">
+            <form name="student" action="/group/select/{{id}}" method="post">
+                <label for="studentName" class="form-label">FIO to'liq kiritiladi</label>
+                <input type="hidden" name="topicId" id="topicId" value="" />
+                <input type="text" id="studentName" class="form-control" name="studentName" required>
+                <div id="passwordHelpBlock" class="form-text">
+                    Yuqoridagi maydonga to'liq ismingizni kiriting
+                </div>
+                <button type="submit" class="btn btn-success mt-2">Mavzuni tanlash</button>
+            </form>
+        </div>
+    </div>
+    <br />
+    <br />
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+
+<script>
+    $(document).ready(function () {
+        $("input[name=topicRadio]").change(function () {
+            $('#selectedTheme').html($(this).parent().find(".topicName").val());
+            $('#topicId').val($(this).parent().find(".currentTopicId").val());
+        });
+    });
+</script>
+</body>
+</html>
